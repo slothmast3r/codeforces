@@ -1,74 +1,57 @@
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
-#include <algorithm>
-
-using namespace std;
-
-int main(){
-    vector< pair<string, int> > piny;
-    int t;
-    cin >> t;
-    while(t--){
-        string pins[10];
+    #include <iostream>
+    #include <set>
+    #include <vector>
+     
+    using namespace std;
+     
+    void solve(){
         int n;
         cin >> n;
-        for(int i = 0; i < n; i++){
-            cin >> pins[i];
-        }
-        int x = 0;
-        bool bylo = false;
-        piny.push_back(make_pair(pins[0],0));
-        int ans = 0;
-        for(int i = 1; i < n; i++){
-            bylo = false;
-            for(int j = 0; j < piny.size(); j++){
-                if(piny[j].first == pins[i]){
-                    bylo = true;
-                    piny[j].second++;
-                    ans++;
-                }
-            }
-            if(!bylo){
-                piny.push_back(make_pair(pins[i],0));
-            }
-        }
-        cout << ans << endl;
-        int xd;
-        int a = 0;
-        vector<string> newpins;
-        string nowy;
         
-        for(int i = 0; i < piny.size(); i++){
-            newpins.push_back(piny[i].first);
-            cout <<  piny[i].first << endl;
+        vector<string> a(n);
+        set<string> have;
+        int res = 0;
+        vector<char> calced(n);
+        
+        for(string &pin : a){
+            cin >> pin;
+            have.insert(pin);
         }
-        for(int i = 0; i < piny.size(); i++){
-            for(int j = 0; j < piny[i].second; j++){
-                xd = j + '0' + a;
-                if(xd == piny[i].first[0]) {
-                    xd++; 
-                    a++;
-                }
-                    nowy = piny[i].first;
-                    nowy[0] = (char)xd;
-                    while(find(newpins.begin(), newpins.end(), nowy)!= newpins.end()){
-                        xd++; 
-                        a++;
-                        nowy[0] = (char)xd;
-                    }
-                    newpins.push_back(nowy);
-                    cout << nowy << endl;
+        
+        for(int i = 0; i < n; i++){
+            if(calced[i]){
+                continue;
             }
-            
+            for(int j = i + 1; j < n; j++){
+                if(a[i] == a[j]){
+                    calced[j] = 1;
+                    res++;
+                    for(int k = 0; k < 4 && a[i] == a[j]; k++){
+                        for(char c = '0'; c <= '9'; c++){
+                            string t = a[j];
+                            t[k] = c;
+                            if(!have.count(t)){
+                                have.insert(t);
+                                a[j] = t;
+                                break;
+                            }
+                        }
+                    }  
+                }
+            }
         }
-        while(newpins.size()){
-            newpins.pop_back();
-        }
-        while(piny.size()){
-            piny.pop_back();
+        cout << res << endl; 
+        for(string &s : a){
+            cout << s << endl;
         }
     }
-    return 0;
-}
+     
+    int main(){
+        int test;
+        cin >> test;
+        while(test--){
+            solve();
+        }
+        
+        return 0;
+    }
